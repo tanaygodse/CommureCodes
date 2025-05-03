@@ -15,7 +15,7 @@ export default function TaskListButton({ onPress }) {
       onPress={onPress}
     >
       <Animated.View style={[styles.wrapper, { transform: [{ scale }] }]}>
-        <Image source={require('../assets/shop.png')} style={styles.icon} />
+        <Image source={require('../assets/tasklist_white.png')} style={styles.icon} />
       </Animated.View>
     </TouchableWithoutFeedback>
   );
@@ -25,12 +25,12 @@ const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
     bottom: 20,
-    left: "33%",
+    alignSelf: 'center',
     backgroundColor: 'transparent',
   },
   icon: {
-    width: 50,
-    height: 50,
+    width: 80,
+    height: 80,
   },
 });
 

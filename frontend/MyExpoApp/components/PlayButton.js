@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Animated, TouchableWithoutFeedback, Image, StyleSheet } from 'react-native';
 
-export default function ShopButton({ onPress }) {
+export default function PlayButton({ onPress }) {
   const scale = useRef(new Animated.Value(1)).current;
 
   return (
@@ -15,7 +15,7 @@ export default function ShopButton({ onPress }) {
       onPress={onPress}
     >
       <Animated.View style={[styles.wrapper, { transform: [{ scale }] }]}>
-        <Image source={require('../assets/shop.png')} style={styles.icon} />
+        <Image source={require('../assets/play.png')} style={styles.icon} />
       </Animated.View>
     </TouchableWithoutFeedback>
   );
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
     bottom: 20,
-    left: "5%",
+    right: "5%",
     backgroundColor: 'transparent'
   },
   icon: {
