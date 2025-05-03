@@ -37,13 +37,8 @@ export default function App() {
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Shop" component={ShopScreen} />
               <Stack.Screen name="Tasks" component={TaskListScreen} />
-              
             </Stack.Navigator>
           </NavigationContainer>
-
-          {/* ← mount it here so it floats on every screen */}
-          <PlayButton />
-
         </ImageBackground>
       </SafeAreaProvider>
     </AvatarProvider>

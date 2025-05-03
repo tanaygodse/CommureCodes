@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AvatarContext } from '../context/AvatarContext';
-import * as Speech from 'expo-speech';
 import { Ionicons } from '@expo/vector-icons'; // for play icon
 
 export default function BoyWithDialog({ message }) {
@@ -34,13 +33,7 @@ export default function BoyWithDialog({ message }) {
     ]).start();
   }, [opacity, translateY]);
 
-  const speakMessage = () => {
-    Speech.speak(message, {
-      pitch: 1.4,
-      rate: 0.85,
-      voice: 'com.apple.ttsbundle.siri_Aaron_en-US_compact'
-    });
-  };
+  
 
   return (
     <Animated.View
@@ -56,9 +49,6 @@ export default function BoyWithDialog({ message }) {
       <View style={styles.dialogWrapper}>
         <View style={styles.dialogRow}>
           <Text style={styles.dialogContent}>{message}</Text>
-          <TouchableOpacity onPress={speakMessage} style={styles.playButton}>
-            <Ionicons name="volume-high" size={20} color="#555" />
-          </TouchableOpacity>
         </View>
         <View style={styles.triangle} />
       </View>
