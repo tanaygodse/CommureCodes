@@ -2,6 +2,7 @@
 import React from 'react';
 import { ImageBackground, SafeAreaView, StyleSheet } from 'react-native';
 
+
 import ScoreTracker from '../components/ScoreTracker';
 import ShopButton from '../components/ShopButton';
 import TaskListButton from '../components/TaskListButton';

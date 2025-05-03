@@ -11,6 +11,8 @@ import HomeScreen from './screens/HomeScreen';
 import ShopScreen from './screens/ShopScreen';
 import TaskListScreen from './screens/TaskListScreen';
 
+
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -35,6 +37,7 @@ export default function App() {
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Shop" component={ShopScreen} />
               <Stack.Screen name="Tasks" component={TaskListScreen} />
+              
             </Stack.Navigator>
           </NavigationContainer>
 

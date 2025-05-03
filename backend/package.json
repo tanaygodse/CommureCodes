@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "expo-av": "^15.1.4",
+    "react-native-audio-recorder-player": "^3.6.12",
+    "react-native-websocket": "^1.0.2"
+  }
+}
