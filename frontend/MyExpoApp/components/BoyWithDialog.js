@@ -1,5 +1,4 @@
-// components/BoyWithDialog.js
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef, useContext, useMemo } from 'react';
 import {
   Animated,
   View,
@@ -10,14 +9,47 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AvatarContext } from '../context/AvatarContext';
-import { Ionicons } from '@expo/vector-icons'; // for play icon
-import TaskCompleteButton from '../components/TaskCompleteButton';
 
-export default function BoyWithDialog({ message }) {
-  const { avatar } = useContext(AvatarContext);
+function getCurrentTimeAsMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function timeToMinutes(timeStr) {
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+
+export default function BoyWithDialog() {
+  const { avatar, taskMap, setTaskMap, points, setPoints } = useContext(AvatarContext); 
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(20)).current;
   const insets = useSafeAreaInsets();
+
+  const { activeTasks, nextTask } = useMemo(() => {
+    const now = getCurrentTimeAsMinutes();
+    const tasks = Object.entries(taskMap).map(([id, task]) => ({
+      id,
+      ...task
+    }));
+
+    const active = tasks.filter(t => {
+      const start = timeToMinutes(t.startTime);
+      const end = timeToMinutes(t.endTime);
+      return now >= start && now <= end;
+    });
+
+    const futureTasks = tasks
+      .map(t => ({ ...t, startMinutes: timeToMinutes(t.startTime) }))
+      .filter(t => t.startMinutes > now)
+      .sort((a, b) => a.startMinutes - b.startMinutes);
+
+    return {
+      activeTasks: active,
+      nextTask: futureTasks[0] || null
+    };
+  }, [taskMap]);
 
   useEffect(() => {
     Animated.parallel([
@@ -34,15 +66,53 @@ export default function BoyWithDialog({ message }) {
     ]).start();
   }, [opacity, translateY]);
 
-  const handleTaskComplete = () => {
-    setShowAnimation(true);
-    animationRef.current?.play();
+  const markTaskCompleted = (taskId) => {
+    setTaskMap(prev => {
+      if (prev[taskId].completed) return prev;
+  
+      const earnedPoints = prev[taskId].points || 0;
 
-    // Optionally update backend here
+      setPoints(prevPoints => prevPoints + earnedPoints);
+  
+      return {
+        ...prev,
+        [taskId]: {
+          ...prev[taskId],
+          completed: true
+        }
+      };
+    });
+  };
 
-    setTimeout(() => {
-      setShowAnimation(false);
-    }, 5000);
+  const renderMessages = () => {
+    if (activeTasks.length > 0) {
+      return activeTasks.map((task, index) => (
+        <View style={styles.taskRow} key={index}>
+          <Text style={styles.dialogText}>{task.story}</Text>
+          <TouchableOpacity
+            onPress={() => markTaskCompleted(task.id)}
+            disabled={task.completed}
+          >
+            <Text style={[styles.tick, task.completed && styles.tickDisabled]}>
+              {task.completed ? '✔️' : '✅'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ));
+    } else if (nextTask) {
+      return (
+        <View style={styles.taskRow}>
+          <Text style={styles.dialogText}>Upcoming: {nextTask.story}</Text>
+          <Text style={styles.tick}>🕒</Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.taskRow}>
+          <Text style={styles.dialogText}>You're all caught up for now. Great job!</Text>
+        </View>
+      );
+    }
   };
 
   return (
@@ -50,7 +120,7 @@ export default function BoyWithDialog({ message }) {
       style={[
         styles.container,
         {
-          bottom: insets.bottom + 80,    // lift above the home indicator
+          bottom: insets.bottom + 80,
           opacity,
           transform: [{ translateY }],
         }
@@ -58,8 +128,7 @@ export default function BoyWithDialog({ message }) {
     >
       <View style={styles.dialogWrapper}>
         <View style={styles.dialogRow}>
-          <Text style={styles.dialogContent}>{message}</Text>
-          <TaskCompleteButton />
+          {renderMessages()}
         </View>
         <View style={styles.triangle} />
       </View>
@@ -77,7 +146,7 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     right: -70,
-    alignItems: 'flex-end',   // bubble + tail + image all right-aligned
+    alignItems: 'flex-end',
     backgroundColor: 'transparent'
   },
   boyImage: {
@@ -85,45 +154,49 @@ const styles = StyleSheet.create({
     height: 420,
   },
   dialogWrapper: {
-    backgroundColor: '#FFFAE5',   // a soft cream
+    backgroundColor: '#FFFAE5',
     borderRadius: 16,
     paddingHorizontal: 14,
     paddingVertical: 10,
     maxWidth: 260,
     marginBottom: 10,
     marginRight: 150,
-    // shadow for iOS & elevation for Android
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
-    flexShrink: 1,  // Add this if needed
-
+    flexShrink: 1,
   },
   dialogRow: {
-    flexDirection: 'column', // Stack text and button
-    alignItems: 'flex-start', // Align to left
+    flexDirection: 'column',
+    alignItems: 'flex-start',
     width: '100%',
+    gap: 6
+  },
+  taskRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%'
   },
   dialogText: {
     fontSize: 16,
-    lineHeight: 20,
-    flexShrink: 1,     // allow shrinking
-    flexGrow: 1,       // take remaining space
-    flexBasis: 0,      // allow flex rules to apply
-    marginRight: 8,
+    flexShrink: 1,
+    flexGrow: 1,
     color: '#000',
-    borderWidth: 1,
-    borderColor: 'red',
+    marginRight: 8,
   },
-  playButton: {
-    margin: 0,
+  tick: {
+    fontSize: 18,
+  },
+  tickDisabled: {
+    opacity: 0.4
   },
   triangle: {
     position: 'absolute',
     bottom: -10,
-    right: 26,                    // aim toward the boy’s head
+    right: 26,
     width: 0,
     height: 0,
     borderLeftWidth: 10,

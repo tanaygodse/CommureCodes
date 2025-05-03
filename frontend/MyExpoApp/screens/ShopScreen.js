@@ -1,5 +1,5 @@
 // screens/ShopScreen.js
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   ImageBackground,
   SafeAreaView,
@@ -13,91 +13,81 @@ import {
 import { AvatarContext } from '../context/AvatarContext';
 
 const costumes = [
-  {
-    id: '1',
-    name: 'Default Outfit',
-    image: require('../assets/avatar_boy1.png'),
-    cost: 0,
-  },
-  {
-    id: '2',
-    name: 'Superhero Cape',
-    image: require('../assets/avatar_boy2.png'),
-    cost: 50,
-  },
-  {
-    id: '3',
-    name: 'Astronaut Suit',
-    image: require('../assets/avatar_boy3.png'),
-    cost: 100,
-  },
+  { id: '1', name: 'Default Outfit', image: require('../assets/avatar_boy1.png'), cost: 0 },
+  { id: '2', name: 'Superhero Cape',  image: require('../assets/avatar_boy2.png'), cost: 50 },
+  { id: '3', name: 'Astronaut Suit',  image: require('../assets/avatar_boy3.png'), cost: 100 },
 ];
 
 export default function ShopScreen() {
   const {
     avatar,
     setAvatar,
-    points,             // pulled from context
+    points,
     setPoints,
-    ownedCostumes,      // pulled from context
+    ownedCostumes,
     setOwnedCostumes,
   } = useContext(AvatarContext);
-  const balance = points;
-  // Track owned costume IDs; default owns those with cost 0
-  const [owned, setOwned] = useState(() => {
-    const freeIds = costumes.filter(c => c.cost === 0).map(c => c.id);
-    return new Set(freeIds);
-  });
 
+  // 1) Derive free IDs once:
+  const freeIds = costumes.filter(c => c.cost === 0).map(c => c.id);
+
+  // 2) Seed free costumes on first mount only:
+  useEffect(() => {
+    // avoid re-seeding if context already has items
+    if (ownedCostumes.size === 0) {
+      setOwnedCostumes(new Set(freeIds));
+    }
+  }, []); // empty deps → runs once
+
+  // 3) Render each costume:
   const renderItem = ({ item }) => {
     const isSelected = avatar === item.image;
-    const isOwned = owned.has(item.id);
-    const canAfford = balance >= item.cost;
+    const isOwned    = ownedCostumes.has(item.id);
+    const canAfford  = points >= item.cost;
 
-    const handleBuy = item => {
-      if (item.cost > 0 && balance >= item.cost) {
-        setPoints(balance - item.cost);
-        setOwnedCostumes(prev => new Set(prev).add(item.id));
+    // 4) Buy/select handler captures `item` and always sees latest state
+    const handleBuy = () => {
+      if (item.cost > 0 && canAfford) {
+        // functional updates avoid stale closures
+        setPoints(prev => prev - item.cost);
+        setOwnedCostumes(prevSet => {
+          const next = new Set(prevSet);
+          next.add(item.id);
+          return next;
+        });
       }
       setAvatar(item.image);
-      setAvatar(item.image);
     };
 
-    const handleSelect = () => {
+    const handleAvatar = () => {
       setAvatar(item.image);
     };
-
     return (
       <View style={styles.item}>
         <Image source={item.image} style={styles.thumb} resizeMode="contain" />
         <View style={styles.info}>
           <Text style={styles.name}>{item.name}</Text>
 
-          {!isSelected ? (
-            isOwned ? (
-              <TouchableOpacity
-                style={styles.selectButton}
-                onPress={handleSelect}
-              >
-                <Text style={styles.selectText}>Select</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={[
-                  styles.buyButton,
-                  item.cost === 0 && styles.freeButton,
-                  item.cost > 0 && !canAfford && styles.disabledButton,
-                ]}
-                onPress={handleBuy}
-                disabled={!canAfford}
-              >
-                <Text style={styles.buyText}>
-                  {item.cost === 0 ? 'Free' : `Buy (${item.cost})`}
-                </Text>
-              </TouchableOpacity>
-            )
-          ) : (
+          {isSelected ? (
             <Text style={styles.selectedText}>Selected</Text>
+          ) : isOwned ? (
+            <TouchableOpacity style={styles.selectButton} onPress={handleAvatar}>
+              <Text style={styles.selectText}>Select</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[
+                styles.buyButton,
+                item.cost === 0 && styles.freeButton,
+                item.cost > 0 && !canAfford && styles.disabledButton,
+              ]}
+              onPress={handleBuy}
+              disabled={!canAfford}
+            >
+              <Text style={styles.buyText}>
+                {item.cost === 0 ? 'Free' : `Buy (${item.cost})`}
+              </Text>
+            </TouchableOpacity>
           )}
         </View>
       </View>
@@ -112,10 +102,10 @@ export default function ShopScreen() {
         resizeMode="cover"
       >
         <Text style={styles.header}>Shop Costumes</Text>
-        <Text style={styles.balance}>Balance: {balance}</Text>
+        <Text style={styles.balance}>Balance: {points}</Text>
         <FlatList
           data={costumes}
-          keyExtractor={t => t.id}
+          keyExtractor={c => c.id}
           renderItem={renderItem}
           contentContainerStyle={styles.list}
         />
@@ -123,6 +113,7 @@ export default function ShopScreen() {
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

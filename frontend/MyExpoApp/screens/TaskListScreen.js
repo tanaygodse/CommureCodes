@@ -1,43 +1,51 @@
 // screens/TaskListScreen.js
-import React from 'react';
-import {
-  ImageBackground,
-  SafeAreaView,
-  Text,
-  FlatList,
-  View,
-  StyleSheet,
-} from 'react-native';
-
-const tasks = [
-  { id: '1', title: 'Check in at reception' },
-  { id: '2', title: 'Get your height & weight measured' },
-  { id: '3', title: 'Meet the nurse' },
-  { id: '4', title: 'Play the waiting-room game' },
-];
+import React, { useContext } from 'react';
+import { SafeAreaView, View, Text, FlatList, StyleSheet } from 'react-native';
+import { AvatarContext } from '../context/AvatarContext';
 
 export default function TaskListScreen() {
+  const { taskMap } = useContext(AvatarContext);
+
+  const timeToMinutes = (timeStr) => {
+    const [h, m] = timeStr.split(":").map(Number);
+    return h * 60 + m;
+  };
+
+  const formatToAMPM = (timeStr) => {
+    const [hour, minute] = timeStr.split(':').map(Number);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const adjustedHour = hour % 12 || 12;
+    return `${adjustedHour}:${minute.toString().padStart(2, '0')} ${ampm}`;
+  };
+  
+  const tasks = Object.entries(taskMap)
+    .map(([id, taskObj]) => ({
+      id,
+      ...taskObj
+    }))
+    .sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <Text style={styles.itemText}>• {item.title}</Text>
+    <View style={styles.taskCard}>
+      <Text style={styles.timeRange}>
+        {formatToAMPM(item.startTime)} - {formatToAMPM(item.endTime)}
+      </Text>
+      <Text style={styles.taskTitle}>{item.task}</Text>
+      <Text style={styles.story}>{item.story}</Text>
+      <Text style={styles.status}>
+        Completed: {item.completed ? '✅' : '❌'}
+      </Text>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <ImageBackground
-        source={require('../assets/image_bg.png')}
-        style={styles.bg}
-        resizeMode="cover"
-      >
-        <Text style={styles.header}>Your Tasks</Text>
-        <FlatList
-          data={tasks}
-          keyExtractor={item => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={styles.list}
-        />
-      </ImageBackground>
+      <FlatList
+        data={tasks}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingBottom: 16 }}
+      />
     </SafeAreaView>
   );
 }
@@ -45,30 +53,31 @@ export default function TaskListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent', 
+    paddingTop: 100,
   },
-  bg: {
-    flex: 1,
-  },
-  header: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginVertical: 16,
-    alignSelf: 'center',
-    color: '#333',
-  },
-  list: {
-    paddingHorizontal: 20,
-  },
-  item: {
-    backgroundColor: '#E0F7FA',
+  taskCard: {
+    marginBottom: 16,
+    padding: 16,
+    backgroundColor: '#f0f0f0',
     borderRadius: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 12,
   },
-  itemText: {
+  taskTitle: {
     fontSize: 18,
-    color: '#006064',
+    fontWeight: 'bold'
   },
+  story: {
+    fontSize: 14,
+    marginTop: 4
+  },
+  status: {
+    fontSize: 14,
+    marginTop: 8,
+    color: 'gray'
+  },
+  timeRange: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+    color: '#555',
+  }
 });

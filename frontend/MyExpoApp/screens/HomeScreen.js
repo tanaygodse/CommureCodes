@@ -12,15 +12,14 @@ import { AvatarContext } from '../context/AvatarContext';
 
 export default function HomeScreen({ navigation }) {
   const { points } = useContext(AvatarContext);
-  message = "Hey there! Ready for your next challenge?"
   return (
     <SafeAreaView style={styles.container}>
       {/* just your UI over the transparent background */}
       <ScoreTracker score={points} />
       <ShopButton onPress={() => navigation.navigate('Shop')}/>
       <TaskListButton onPress={() => navigation.navigate('Tasks')} />
-      <BoyWithDialog message={message} />
-      <PlayButton message={message} />
+      <BoyWithDialog />
+      <PlayButton />
     </SafeAreaView>
   );
 }

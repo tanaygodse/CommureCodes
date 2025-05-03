@@ -7,11 +7,13 @@ export default function PlayButton({ message = 'Hello!', onPress }) {
   const scale = useRef(new Animated.Value(1)).current;
 
   const speakMessage = () => {
+    console.log(message);
     Speech.speak(message, {
       pitch: 1.4,
       rate: 0.85,
       voice: 'com.apple.ttsbundle.siri_Aaron_en-US_compact',
     });
+    console.log("after speak")
   };
 
   const handlePress = () => {

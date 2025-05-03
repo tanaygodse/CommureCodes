@@ -5,7 +5,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AvatarProvider } from './context/AvatarContext';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import PlayButton from './components/PlayButton'; // ← import it
 
 import HomeScreen from './screens/HomeScreen';
 import ShopScreen from './screens/ShopScreen';
