@@ -12,12 +12,7 @@ const Stack = createNativeStackNavigator();
 export default function StackNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} 
-      screenOptions={{
-      headerShown: false,
-      // make the scene content transparent
-      contentStyle: { backgroundColor: 'transparent' },
-      }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} >
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Shop" component={ShopScreen} />
         <Stack.Screen name="Tasks" component={TaskListScreen} />

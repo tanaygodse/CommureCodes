@@ -47,6 +47,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent', 
   },
+  bg: {
+    flex: 1,
+  },
   header: {
     fontSize: 26,
     fontWeight: 'bold',
