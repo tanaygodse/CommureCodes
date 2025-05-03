@@ -11,7 +11,8 @@ import PlayButton from '../components/PlayButton';
 import { AvatarContext } from '../context/AvatarContext';
 
 export default function HomeScreen({ navigation }) {
-  const { points } = useContext(AvatarContext);
+  const { points, speechMessage } = useContext(AvatarContext);
+
   return (
     <SafeAreaView style={styles.container}>
       {/* just your UI over the transparent background */}
@@ -19,7 +20,7 @@ export default function HomeScreen({ navigation }) {
       <ShopButton onPress={() => navigation.navigate('Shop')}/>
       <TaskListButton onPress={() => navigation.navigate('Tasks')} />
       <BoyWithDialog />
-      <PlayButton />
+      <PlayButton message={speechMessage} />
     </SafeAreaView>
   );
 }

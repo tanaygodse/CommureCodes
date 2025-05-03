@@ -10,6 +10,7 @@ export function AvatarProvider({ children }) {
     const freeIds = ['1'];
     return new Set(freeIds);
   });
+  PATIENT_ID = "662fa9bce02d7f5c79a39abe"
   const [taskMap, setTaskMap] = useState({
     1: {
         task: "take medicine",
@@ -23,8 +24,8 @@ export function AvatarProvider({ children }) {
         task: "stretching",
         story: "Time to stretch your limbs and prepare for the space mission!",
         completed: false,
-        startTime: "10:00", 
-        endTime: "12:00",
+        startTime: "12:00", 
+        endTime: "14:00",
         points: 10
     },
     3: {
@@ -39,8 +40,8 @@ export function AvatarProvider({ children }) {
         task: "Get a CT Scan",
         story: "The shields need to be strengthed with the power of magnets, meet up with chief for a CT scan.",
         completed: false,
-        startTime: "14:00",
-        endTime: "16:00",
+        startTime: "12:00",
+        endTime: "14:00",
         points: 100
     },
     5: {
@@ -51,11 +52,21 @@ export function AvatarProvider({ children }) {
         endTime: "12:00",
         points: 10
     },
+    6: {
+        task: "eat salad 2",
+        story: "After a great quest, reward yourself with some crunchy salad!",
+        completed: false,
+        startTime: "10:00", 
+        endTime: "12:00",
+        points: 10
+    },
   });
+
+  const [speechMessage, setSpeechMessage] = useState('');
 
   return (
     <AvatarContext.Provider
-      value={{ avatar, setAvatar, points, setPoints, ownedCostumes, setOwnedCostumes, taskMap, setTaskMap}}
+      value={{ avatar, setAvatar, points, setPoints, ownedCostumes, setOwnedCostumes, taskMap, setTaskMap, speechMessage, setSpeechMessage}}
     >
       {children}
     </AvatarContext.Provider>
