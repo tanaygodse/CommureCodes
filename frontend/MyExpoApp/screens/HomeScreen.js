@@ -1,6 +1,6 @@
 // screens/HomeScreen.js
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { ImageBackground, SafeAreaView, StyleSheet } from 'react-native';
 
 import ScoreTracker from '../components/ScoreTracker';
 import ShopButton from '../components/ShopButton';
@@ -10,17 +10,24 @@ import BoyWithDialog from '../components/BoyWithDialog';
 export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-      <ScoreTracker score={42} />
 
-      <ShopButton
-        onPress={() => navigation.navigate('Shop')}
-      />
+      <ImageBackground
+        source={require('../assets/image_bg.png')}
+        style={styles.bg}
+        resizeMode="cover"
+      >
+        <ScoreTracker score={42} />
 
-      <TaskListButton
-        onPress={() => navigation.navigate('Tasks')}
-      />
+        <ShopButton
+          onPress={() => navigation.navigate('Shop')}
+        />
 
-      <BoyWithDialog message="Hey there! Ready for your next challenge?" />
+        <TaskListButton
+          onPress={() => navigation.navigate('Tasks')}
+        />
+
+        <BoyWithDialog message="Hey there! Ready for your next challenge?" />
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -28,7 +35,10 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
+  },
+  bg: {
+    flex: 1,
   },
 });
 

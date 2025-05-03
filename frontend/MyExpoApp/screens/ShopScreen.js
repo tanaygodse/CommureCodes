@@ -1,6 +1,7 @@
 // screens/ShopScreen.js
 import React, { useContext } from 'react';
 import {
+  ImageBackground,
   SafeAreaView,
   Text,
   FlatList,
@@ -55,19 +56,26 @@ export default function ShopScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Shop Costumes</Text>
-      <FlatList
-        data={costumes}
-        keyExtractor={t => t.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
-      />
+      <ImageBackground
+        source={require('../assets/image_bg.png')}
+        style={styles.bg}
+        resizeMode="cover"
+      >
+        <Text style={styles.header}>Shop Costumes</Text>
+        <FlatList
+          data={costumes}
+          keyExtractor={t => t.id}
+          renderItem={renderItem}
+          contentContainerStyle={styles.list}
+        />
+      </ImageBackground>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, 
+    backgroundColor: 'transparent', },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -104,4 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0288D1',
     borderRadius: 8,
   },
+  bg: {
+    flex: 1
+  }
 });

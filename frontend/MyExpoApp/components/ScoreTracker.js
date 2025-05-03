@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
+    backgroundColor: 'transparent'
   },
   text: {
     fontSize: 18,

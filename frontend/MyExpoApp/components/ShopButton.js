@@ -25,7 +25,8 @@ const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
     bottom: 20,
-    left: 20,
+    left: "5%",
+    backgroundColor: 'transparent'
   },
   icon: {
     width: 50,

@@ -1,6 +1,7 @@
 // screens/TaskListScreen.js
 import React from 'react';
 import {
+  ImageBackground,
   SafeAreaView,
   Text,
   FlatList,
@@ -24,13 +25,19 @@ export default function TaskListScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Your Tasks</Text>
-      <FlatList
-        data={tasks}
-        keyExtractor={item => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
-      />
+      <ImageBackground
+        source={require('../assets/image_bg.png')}
+        style={styles.bg}
+        resizeMode="cover"
+      >
+        <Text style={styles.header}>Your Tasks</Text>
+        <FlatList
+          data={tasks}
+          keyExtractor={item => item.id}
+          renderItem={renderItem}
+          contentContainerStyle={styles.list}
+        />
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -38,7 +45,7 @@ export default function TaskListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF', 
+    backgroundColor: 'transparent', 
   },
   header: {
     fontSize: 26,

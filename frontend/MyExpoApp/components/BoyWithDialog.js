@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: -70,
     alignItems: 'flex-end',   // bubble + tail + image all right-aligned
+    backgroundColor: 'transparent'
   },
   boyImage: {
     width: 420,

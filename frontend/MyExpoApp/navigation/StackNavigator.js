@@ -1,18 +1,23 @@
 // navigation/StackNavigator.js
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from '../screens/HomeScreen';
 import ShopScreen from '../screens/ShopScreen';
 import TaskListScreen from '../screens/TaskListScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function StackNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} 
+      screenOptions={{
+      headerShown: false,
+      // make the scene content transparent
+      contentStyle: { backgroundColor: 'transparent' },
+      }}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Shop" component={ShopScreen} />
         <Stack.Screen name="Tasks" component={TaskListScreen} />
