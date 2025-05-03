@@ -11,27 +11,11 @@ import BoyWithDialog from '../components/BoyWithDialog';
 export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-
-      <ImageBackground
-        source={require('../assets/image_bg.png')}
-        style={styles.bg}
-        resizeMode="cover"
-      >
-        <ScoreTracker score={42} />
-
-        <ShopButton
-          onPress={() => navigation.navigate('Shop')}
-        />
-
-        <TaskListButton
-          onPress={() => navigation.navigate('Tasks')}
-        />
-
-        
-
-
-        <BoyWithDialog message="Hey there! Ready for your next challenge?" />
-      </ImageBackground>
+      {/* just your UI over the transparent background */}
+      <ScoreTracker score={42} />
+      <ShopButton onPress={() => navigation.navigate('Shop')} />
+      <TaskListButton onPress={() => navigation.navigate('Tasks')} />
+      <BoyWithDialog message="Hey there! Ready for your next challenge?" />
     </SafeAreaView>
   );
 }
@@ -45,4 +29,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-

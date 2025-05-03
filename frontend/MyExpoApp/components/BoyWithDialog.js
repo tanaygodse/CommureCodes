@@ -1,4 +1,5 @@
-import React, { useRef, useContext, useEffect } from 'react';
+// components/BoyWithDialog.js
+import React, { useEffect, useRef, useContext } from 'react';
 import {
   Animated,
   View,
@@ -11,9 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AvatarContext } from '../context/AvatarContext';
 import * as Speech from 'expo-speech';
 import { Ionicons } from '@expo/vector-icons'; // for play icon
-
-
-
+import TaskCompleteButton from '../components/TaskCompleteButton';
 
 export default function BoyWithDialog({ message }) {
   const { avatar } = useContext(AvatarContext);
@@ -21,7 +20,7 @@ export default function BoyWithDialog({ message }) {
   const translateY = useRef(new Animated.Value(20)).current;
   const insets = useSafeAreaInsets();
 
-  React.useEffect(() => {
+  useEffect(() => {
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 1,
@@ -29,19 +28,22 @@ export default function BoyWithDialog({ message }) {
         useNativeDriver: true,
       }),
       Animated.timing(translateY, {
-        toValue: 0,
+        toValue: -10,
         duration: 600,
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [opacity, translateY]);
 
-  const speakMessage = () => {
-    Speech.speak(message, {
-      pitch: 1.4,
-      rate: 0.85,
-      voice: 'com.apple.ttsbundle.siri_Aaron_en-US_compact'
-    });
+  const handleTaskComplete = () => {
+    setShowAnimation(true);
+    animationRef.current?.play();
+
+    // Optionally update backend here
+
+    setTimeout(() => {
+      setShowAnimation(false);
+    }, 5000);
   };
 
   return (
@@ -49,7 +51,7 @@ export default function BoyWithDialog({ message }) {
       style={[
         styles.container,
         {
-          bottom: insets.bottom + 20,
+          bottom: insets.bottom + 80,    // lift above the home indicator
           opacity,
           transform: [{ translateY }],
         }
@@ -58,9 +60,7 @@ export default function BoyWithDialog({ message }) {
       <View style={styles.dialogWrapper}>
         <View style={styles.dialogRow}>
           <Text style={styles.dialogContent}>{message}</Text>
-          <TouchableOpacity onPress={speakMessage} style={styles.playButton}>
-            <Ionicons name="volume-high" size={20} color="#555" />
-          </TouchableOpacity>
+          <TaskCompleteButton />
         </View>
         <View style={styles.triangle} />
       </View>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    maxWidth: 280,
+    maxWidth: 260,
     marginBottom: 10,
     marginRight: 150,
     shadowColor: '#000',
@@ -98,27 +98,17 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
-    flexShrink: 1,  // Add this if needed
-    
   },
   dialogRow: {
-    flexDirection: 'column', // Stack text and button
-  alignItems: 'flex-start', // Align to left
-  width: '100%',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    width: '100%',
   },
   dialogText: {
     fontSize: 16,
     lineHeight: 20,
-    flexShrink: 1,     // allow shrinking
-  flexGrow: 1,       // take remaining space
-  flexBasis: 0,      // allow flex rules to apply
-  marginRight: 8,
-    color: '#000', 
-    borderWidth: 1,
-  borderColor: 'red',
-  },
-  playButton: {
-    margin: 0,
+    color: '#000',
+    marginBottom: 8,
   },
   triangle: {
     position: 'absolute',
@@ -132,9 +122,5 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
     borderTopWidth: 10,
     borderTopColor: '#FFFAE5',
-  },
-  dialogContent: {
-    flexDirection: 'column', // vertical stack
-    alignItems: 'flex-start',
   },
 });
