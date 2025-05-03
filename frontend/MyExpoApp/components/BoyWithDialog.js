@@ -11,6 +11,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AvatarContext } from '../context/AvatarContext';
 import { Ionicons } from '@expo/vector-icons'; // for play icon
+import TaskCompleteButton from '../components/TaskCompleteButton';
 
 export default function BoyWithDialog({ message }) {
   const { avatar } = useContext(AvatarContext);
@@ -33,7 +34,16 @@ export default function BoyWithDialog({ message }) {
     ]).start();
   }, [opacity, translateY]);
 
-  
+  const handleTaskComplete = () => {
+    setShowAnimation(true);
+    animationRef.current?.play();
+
+    // Optionally update backend here
+
+    setTimeout(() => {
+      setShowAnimation(false);
+    }, 5000);
+  };
 
   return (
     <Animated.View
@@ -49,6 +59,7 @@ export default function BoyWithDialog({ message }) {
       <View style={styles.dialogWrapper}>
         <View style={styles.dialogRow}>
           <Text style={styles.dialogContent}>{message}</Text>
+          <TaskCompleteButton />
         </View>
         <View style={styles.triangle} />
       </View>
@@ -79,7 +90,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     maxWidth: 260,
-    marginBottom: 10,              // gap between bubble and head
+    marginBottom: 10,
     marginRight: 150,
     // shadow for iOS & elevation for Android
     shadowColor: '#000',
@@ -121,9 +132,5 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
     borderTopWidth: 10,
     borderTopColor: '#FFFAE5',
-  },
-  dialogContent: {
-    flexDirection: 'column', // vertical stack
-    alignItems: 'flex-start',
   },
 });
