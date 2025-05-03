@@ -2,6 +2,7 @@
 import React from 'react';
 import { ImageBackground, SafeAreaView, StyleSheet } from 'react-native';
 
+
 import ScoreTracker from '../components/ScoreTracker';
 import ShopButton from '../components/ShopButton';
 import TaskListButton from '../components/TaskListButton';
@@ -25,6 +26,9 @@ export default function HomeScreen({ navigation }) {
         <TaskListButton
           onPress={() => navigation.navigate('Tasks')}
         />
+
+        
+
 
         <BoyWithDialog message="Hey there! Ready for your next challenge?" />
       </ImageBackground>
